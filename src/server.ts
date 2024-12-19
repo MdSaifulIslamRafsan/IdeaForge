@@ -5,7 +5,7 @@ import config from "./app/config";
 const connectDB = async() => {
     try { 
         await mongoose.connect(config.db_url as string);
-        console.log("MongoDB connected successfully");  
+        console.log("Database connected successfully!");  
 
         app.listen(config.port, () => {
             console.log(`Server is running on port ${config.port}`);
@@ -17,3 +17,8 @@ const connectDB = async() => {
 }
 
 connectDB(); 
+
+process.on('uncaughtException', (error)=>{
+    console.error('🚨 An uncaught error occurred:', error);
+    process.exit(1);
+})
