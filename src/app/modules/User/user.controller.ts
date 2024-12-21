@@ -1,4 +1,10 @@
+import catchAsync from "../../utils/catchAsync";
 
-const createUser = () => {
-    
+const createUser = catchAsync(async(req , res)=>{
+    const result = await 
+
+});
+
+export const UserController = {
+    createUser
 }
