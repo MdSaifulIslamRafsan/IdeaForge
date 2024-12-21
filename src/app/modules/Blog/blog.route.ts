@@ -8,7 +8,7 @@ import { UserRole } from '../User/user.constant';
 
 const router = express.Router();
 
-router.post('/', auth() , validateRequest(BlogValidation.createBlogValidation), BlogController.createBlog );
-router.patch('/:id',validateRequest(BlogValidation.updateBlogValidation), auth() , BlogController.createBlog );
-
+router.post('/', auth(UserRole.user) , validateRequest(BlogValidation.createBlogValidation), BlogController.createBlog );
+router.patch('/:id',validateRequest(BlogValidation.updateBlogValidation), auth(UserRole.user) , BlogController.updateBlog );
+ 
 export const BlogRoutes =  router;

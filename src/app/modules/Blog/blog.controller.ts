@@ -5,14 +5,14 @@ import { BlogService } from './blog.service';
 import AppError from './../../errors/AppError';
 
 const createBlog = catchAsync(async (req, res) => {
-    if(!req.user){
-        throw new AppError(StatusCodes.NOT_FOUND , "User not found");
-    }
+  if (!req.user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
 
-    const {email} = req.user;
-   
+  const { _id } = req.user;
+  
 
-  const result = await BlogService.createBlogIntoDB( req.body , email);
+  const result = await BlogService.createBlogIntoDB(req.body, _id);
 
   sendResponse(res, {
     success: true,
@@ -22,6 +22,25 @@ const createBlog = catchAsync(async (req, res) => {
   });
 });
 
+const updateBlog = catchAsync(async (req, res) => {
+  const { id : blogId } = req.params;
+  const blogData = req.body;
+  if (!req.user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+
+  const { _id : userId } = req.user;
+  const result = await BlogService.updateBlogIntoDB(blogData, blogId , userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Blog updated successfully',
+    data: result,
+  });
+});
+
 export const BlogController = {
   createBlog,
+  updateBlog,
 };

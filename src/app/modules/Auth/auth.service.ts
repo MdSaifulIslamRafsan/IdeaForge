@@ -19,13 +19,18 @@ const loginUserFromDB = async(payload : ILoginUser)=>{
     if(userStatus) {
         throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked')
     }
-    const isValidPassword =  bcrypt.compare(payload?.password, isUserExist.password);
+    if(!payload?.password){
+        throw new AppError(StatusCodes.BAD_REQUEST, 'Password is required')
+    }
+
+    const isValidPassword =await bcrypt.compare(payload?.password, isUserExist.password);
 
     if(!isValidPassword){
         throw new AppError(StatusCodes.FORBIDDEN, 'Invalid password')
     }
 
     const jwtPayload = {
+        _id : isUserExist._id, 
         email : isUserExist.email,
         role: isUserExist.role,   
     }
