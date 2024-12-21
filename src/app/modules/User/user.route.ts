@@ -8,4 +8,4 @@ const router = express.Router();
 router.post('/register' , validateRequest(UserValidation.createUserValidation),  UserController.createUser)
 
 
-export const AuthRouter = router;
+export const RegisterRoutes = router;
