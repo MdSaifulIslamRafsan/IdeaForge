@@ -11,22 +11,19 @@ const loginUserFromDB = async(payload : ILoginUser)=>{
 
     const isUserExist = await User.findOne({email: payload.email}).select("+password");
     if(!isUserExist) {
-        throw new AppError(StatusCodes.NOT_FOUND, 'User not found')
+        throw new AppError(StatusCodes.NOT_FOUND, 'Invalid credentials')
     }
  
 
     const userStatus = isUserExist?.isBlocked;
     if(userStatus) {
-        throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked')
-    }
-    if(!payload?.password){
-        throw new AppError(StatusCodes.BAD_REQUEST, 'Password is required')
+        throw new AppError(StatusCodes.FORBIDDEN, 'Invalid credentials')
     }
 
     const isValidPassword =await bcrypt.compare(payload?.password, isUserExist.password);
 
     if(!isValidPassword){
-        throw new AppError(StatusCodes.FORBIDDEN, 'Invalid password')
+        throw new AppError(StatusCodes.FORBIDDEN, 'Invalid credentials')
     }
 
     const jwtPayload = {
