@@ -17,6 +17,8 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       minlength: 6,
+      maxlength : 20,
+      select : 0
     },
     role: {
       type: String,
