@@ -23,6 +23,6 @@ const createUserValidation = z.object({
   }),
 });
 
-export const userValidation = {
+export const UserValidation = {
   createUserValidation,
 };
