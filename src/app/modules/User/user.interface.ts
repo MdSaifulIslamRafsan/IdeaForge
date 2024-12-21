@@ -1,3 +1,5 @@
+import { UserRole } from "./user.constant";
+
 export interface IUser {
     name: string;
     email: string;
@@ -5,3 +7,5 @@ export interface IUser {
     role: "admin" | "user",
     isBlocked: boolean;
 }
+
+export type TUserRole =  keyof typeof UserRole;
