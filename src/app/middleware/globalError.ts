@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 import { IErrorSources } from '../interface/error';
 import handleValidationError from '../errors/handleValidationError';
 import handleDuplicateError from '../errors/handleDuplicateError';
+import handleCastError from '../errors/handleCastError';
 
 const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -12,8 +13,8 @@ const globalErrorHandler: ErrorRequestHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) => {
-  let errorStatus = err.statusCode || 500;
-  let errorMessage = err.message || 'An unexpected error occurred';
+  let errorStatus = 500;
+  let errorMessage = 'An unexpected error occurred';
 
   let errorSource: IErrorSources[] = [
     {
@@ -33,6 +34,11 @@ const globalErrorHandler: ErrorRequestHandler = (
     errorSource = simplifiedError.errorSources;
   } else if (err?.code === 11000) {
     const simplifiedError = handleDuplicateError(err);
+    errorStatus = simplifiedError.statusCode;
+    errorMessage = simplifiedError.message;
+    errorSource = simplifiedError.errorSources;
+  } else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
