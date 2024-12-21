@@ -10,7 +10,6 @@ const createBlog = catchAsync(async (req, res) => {
   }
 
   const { _id } = req.user;
-  
 
   const result = await BlogService.createBlogIntoDB(req.body, _id);
 
@@ -23,14 +22,14 @@ const createBlog = catchAsync(async (req, res) => {
 });
 
 const updateBlog = catchAsync(async (req, res) => {
-  const { id : blogId } = req.params;
+  const { id: blogId } = req.params;
   const blogData = req.body;
   if (!req.user) {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
 
-  const { _id : userId } = req.user;
-  const result = await BlogService.updateBlogIntoDB(blogData, blogId , userId);
+  const { _id: userId } = req.user;
+  const result = await BlogService.updateBlogIntoDB(blogData, blogId, userId);
 
   sendResponse(res, {
     success: true,
@@ -40,7 +39,25 @@ const updateBlog = catchAsync(async (req, res) => {
   });
 });
 
+const deleteBlog = catchAsync(async (req, res) => {
+  const { id: blogId } = req.params;
+  if (!req.user) {
+    throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
+  }
+
+  const { _id: userId } = req.user;
+
+   await BlogService.deleteBlogFromDB(blogId, userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'Blog deleted successfully',
+  });
+});
+
 export const BlogController = {
   createBlog,
   updateBlog,
+  deleteBlog
 };

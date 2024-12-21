@@ -42,7 +42,18 @@ return blogResponse;
 
 }
 
+const deleteBlogFromDB = async(blogId : string , userId : string)=>{
+    const isExistBlog = await Blog.findOne({_id : blogId , author : userId});
+    if(!isExistBlog) {
+        throw new AppError(StatusCodes.NOT_FOUND, "blog not found")
+    }
+
+    const result = await Blog.findByIdAndUpdate(blogId , {isDeleted : true} , {new : true})
+    return result;
+}
+
 export const BlogService = {
     createBlogIntoDB,
-    updateBlogIntoDB
+    updateBlogIntoDB,
+    deleteBlogFromDB
 }
