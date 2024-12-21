@@ -42,6 +42,12 @@ const globalErrorHandler: ErrorRequestHandler = (
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
+  }else if (err?.code === 11000){
+    const simplifiedError = handleDuplicateError(err);
+    errorStatus = simplifiedError.statusCode;
+    errorMessage = simplifiedError.message;
+    errorSource = simplifiedError.errorSources;
+
   }
 
   res.status(errorStatus).send({
