@@ -42,6 +42,12 @@ return blogResponse;
 
 }
 
+const getALLBlogFromDB = () => {
+    const result = Blog.find().select('_id , title , content ,  author').populate('author');
+  
+    return result;
+}
+
 const deleteBlogFromDB = async(blogId : string , userId : string)=>{
     const isExistBlog = await Blog.findOne({_id : blogId , author : userId});
     if(!isExistBlog) {
@@ -55,5 +61,6 @@ const deleteBlogFromDB = async(blogId : string , userId : string)=>{
 export const BlogService = {
     createBlogIntoDB,
     updateBlogIntoDB,
-    deleteBlogFromDB
+    deleteBlogFromDB,
+    getALLBlogFromDB
 }
