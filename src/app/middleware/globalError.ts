@@ -5,6 +5,7 @@ import { IErrorSources } from '../interface/error';
 import handleValidationError from '../errors/handleValidationError';
 import handleDuplicateError from '../errors/handleDuplicateError';
 import handleCastError from '../errors/handleCastError';
+import AppError from '../errors/AppError';
 
 const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -32,22 +33,25 @@ const globalErrorHandler: ErrorRequestHandler = (
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
+  }else if (err?.name === 'CastError') {
+    const simplifiedError = handleCastError(err);
+    errorStatus = simplifiedError.statusCode;
+    errorMessage = simplifiedError.message;
+    errorSource = simplifiedError.errorSources;
   } else if (err?.code === 11000) {
     const simplifiedError = handleDuplicateError(err);
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
-  } else if (err?.name === 'CastError') {
-    const simplifiedError = handleCastError(err);
-    errorStatus = simplifiedError.statusCode;
-    errorMessage = simplifiedError.message;
-    errorSource = simplifiedError.errorSources;
-  }else if (err?.code === 11000){
-    const simplifiedError = handleDuplicateError(err);
-    errorStatus = simplifiedError.statusCode;
-    errorMessage = simplifiedError.message;
-    errorSource = simplifiedError.errorSources;
-
+  } else if (err instanceof AppError) {
+    errorStatus = err.statusCode;
+    errorMessage = err.message;
+    errorSource = [
+      {
+        path: '',
+        message: err?.message,
+      },
+    ];
   }
 
   res.status(errorStatus).send({
