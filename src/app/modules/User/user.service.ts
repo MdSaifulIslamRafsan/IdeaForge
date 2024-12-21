@@ -15,7 +15,15 @@ const createUserIntoDB = async(payload : IUser) => {
 
 
 const result = await User.create(payload);
-return result;
+
+const newUser = {
+    _id : result?._id,
+    name : result?.name,
+    email : result?.email,
+}
+
+
+return newUser;
 }
 
 export const UserService = {
