@@ -3,6 +3,7 @@ import handleZodError from '../errors/handleZodError';
 import { ZodError } from 'zod';
 import { IErrorSources } from '../interface/error';
 import handleValidationError from '../errors/handleValidationError';
+import handleDuplicateError from '../errors/handleDuplicateError';
 
 const globalErrorHandler: ErrorRequestHandler = (
   err,
@@ -11,9 +12,9 @@ const globalErrorHandler: ErrorRequestHandler = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction,
 ) => {
-  let errorStatus = 500;
-  let errorMessage = 'An unexpected error occurred';
-  
+  let errorStatus = err.statusCode || 500;
+  let errorMessage = err.message || 'An unexpected error occurred';
+
   let errorSource: IErrorSources[] = [
     {
       path: '',
@@ -25,18 +26,23 @@ const globalErrorHandler: ErrorRequestHandler = (
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
-  }else if (err?.name === "ValidationError") {
+  } else if (err?.name === 'ValidationError') {
     const simplifiedError = handleValidationError(err);
     errorStatus = simplifiedError.statusCode;
     errorMessage = simplifiedError.message;
     errorSource = simplifiedError.errorSources;
-}
+  } else if (err?.code === 11000) {
+    const simplifiedError = handleDuplicateError(err);
+    errorStatus = simplifiedError.statusCode;
+    errorMessage = simplifiedError.message;
+    errorSource = simplifiedError.errorSources;
+  }
 
   res.status(errorStatus).send({
     success: false,
-    message : errorSource[0]?.message || errorMessage,
+    message: errorMessage,
     errorMessage,
-    error: err,
+    error: { ...err, errorSource },
     stack: err?.stack,
   });
 };
