@@ -1,19 +1,19 @@
-import { Response } from "express";
+import { Response } from 'express';
 
- interface IResponse<T>{
-     success: boolean;
-     statusCodes: number;
-     message?: string;
-     data: T;
- }
-
-
-const sendResponse = <T>(res : Response, data : IResponse<T>) => {
-    res.status(data?.statusCodes).send({
-        success: data?.success,
-        message: data?.message,
-        data: data?.data,
-    })
+interface IResponse<T> {
+  success: boolean;
+  statusCode: number;
+  message?: string;
+  data: T;
 }
+
+const sendResponse = <T>(res: Response, data: IResponse<T>) => {
+  res.status(data?.statusCode).send({
+    success: data?.success,
+    statusCode: data?.statusCode,
+    message: data?.message,
+    data: data?.data,
+  });
+};
 
 export default sendResponse;
