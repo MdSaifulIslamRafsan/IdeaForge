@@ -17,7 +17,17 @@ class QueryBuilder<T> {
     }
     return this;
   }
-  
+  sort() {
+    const sortField = this.query.sort || 'title';
+    const sortOrder = this.query.sortOrder === 'desc' ? -1 : 1;
+
+    const sortQuery: Record<string, 1 | -1> = {
+      [sortField as string]: sortOrder,
+    };
+
+    this.modelQuery = this.modelQuery.sort(sortQuery);
+    return this;
+  }
 }
 
 export default QueryBuilder;

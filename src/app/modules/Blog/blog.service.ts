@@ -45,7 +45,7 @@ return blogResponse;
 
 const getALLBlogFromDB = async(query : Record<string , unknown>) => {
 
-    const blogQuery = new QueryBuilder( Blog.find().select('_id , title , content ,  author').populate('author') , query).search('title')
+    const blogQuery = new QueryBuilder( Blog.find().select('_id , title , content ,  author').populate('author') , query).search('title').sort()
     const result = await blogQuery.modelQuery;
   
     return result;
