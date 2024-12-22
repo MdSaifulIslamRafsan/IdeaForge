@@ -1,4 +1,4 @@
-import { Query } from 'mongoose';
+import { FilterQuery, Query } from 'mongoose';
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
@@ -7,12 +7,18 @@ class QueryBuilder<T> {
     this.modelQuery = modelQuery;
     this.query = query;
   }
-  search(blogTitle: string) {
+  search(blogTitles: string[]) {
     const search = this.query.search;
 
     if (search) {
       this.modelQuery = this.modelQuery.find({
-        [blogTitle]: { $regex: search, $options: 'i' },
+        $or: blogTitles.map(
+          (field) =>
+            ({
+              [field]: { $regex: search, $options: 'i' },
+            }) as FilterQuery<T>,
+        ),
+        
       });
     }
     return this;
