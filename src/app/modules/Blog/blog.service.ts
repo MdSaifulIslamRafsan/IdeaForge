@@ -4,6 +4,7 @@ import AppError from "../../errors/AppError";
 import User from "../User/user.model";
 import { IBlog } from "./blog.interface";
 import Blog from "./blog.model";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createBlogIntoDB = async(payload : IBlog , userId : string) => {
    
@@ -42,8 +43,10 @@ return blogResponse;
 
 }
 
-const getALLBlogFromDB = () => {
-    const result = Blog.find().select('_id , title , content ,  author').populate('author');
+const getALLBlogFromDB = async(query : Record<string , unknown>) => {
+
+    const blogQuery = new QueryBuilder( Blog.find().select('_id , title , content ,  author').populate('author') , query).search('title')
+    const result = await blogQuery.modelQuery;
   
     return result;
 }
