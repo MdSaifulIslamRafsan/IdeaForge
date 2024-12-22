@@ -17,6 +17,15 @@ class QueryBuilder<T> {
     }
     return this;
   }
+  filter() {
+    const queryObj = {...this.query}
+    const excludedFields = ['search' ,'sort', 'sortOrder']
+    excludedFields.forEach(field => delete queryObj[field])
+
+    this.modelQuery = this.modelQuery.find(queryObj);
+
+    return this;
+  }
   sort() {
     const sortField = this.query.sort || 'title';
     const sortOrder = this.query.sortOrder === 'desc' ? -1 : 1;
@@ -28,6 +37,7 @@ class QueryBuilder<T> {
     this.modelQuery = this.modelQuery.sort(sortQuery);
     return this;
   }
+ 
 }
 
 export default QueryBuilder;
